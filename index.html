@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FEVER DREAM</title>
 
 <!-- Universal icons -->
@@ -10,58 +11,79 @@
 <meta name="msapplication-TileImage" content="FeverDream.png">
 
 <style>
+:root {
+  --max-width: 520px;
+}
+
 body {
   margin: 0;
   background: #111;
   color: #fff;
-  font-family: system-ui, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  display: flex;
+  justify-content: center;
+}
+
+.app {
+  width: 100%;
+  max-width: var(--max-width);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 24px;
-  height: 100vh;
+  padding: 20px 16px 28px;
+  box-sizing: border-box;
+  gap: 20px;
 }
 
+/* Album / Player */
 .player {
   position: relative;
-  width: 460px;
-  height: 460px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   border-radius: 22px;
   overflow: hidden;
   background: url("FeverDream.png") center / cover no-repeat;
-  box-shadow: 0 0 40px rgba(231,76,60,.75);
+  box-shadow: 0 0 40px rgba(231,76,60,.7);
 }
 
+/* Play button */
 .play-btn {
   position: absolute;
   inset: 0;
   margin: auto;
-  width: 120px;
-  height: 120px;
+  width: 22vw;
+  max-width: 120px;
+  min-width: 84px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
-  background: rgba(0,0,0,.65);
+  background: rgba(0,0,0,.6);
   border: none;
   color: white;
-  font-size: 2.6rem;
+  font-size: 2.2rem;
   cursor: pointer;
   backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .playing::after { content: "❚❚"; }
 .paused::after { content: "▶"; }
 
+/* Lyrics */
 .lyrics {
-  width: 460px;
-  max-height: 260px;
+  width: 100%;
+  max-height: 38vh;
   overflow-y: auto;
   text-align: center;
   line-height: 1.65;
   opacity: .95;
-  padding: 10px 16px;
+  padding: 4px 10px;
   white-space: pre-line;
 }
 
+/* Scrollbar */
 .lyrics::-webkit-scrollbar {
   width: 6px;
 }
@@ -69,15 +91,25 @@ body {
   background: rgba(255,255,255,.25);
   border-radius: 4px;
 }
+
+/* Desktop polish */
+@media (min-width: 768px) {
+  .lyrics {
+    max-height: 300px;
+    font-size: 1.05rem;
+  }
+}
 </style>
 </head>
 <body>
 
-<div class="player">
-  <button id="playBtn" class="play-btn paused"></button>
-</div>
+<div class="app">
 
-<div class="lyrics">
+  <div class="player">
+    <button id="playBtn" class="play-btn paused"></button>
+  </div>
+
+  <div class="lyrics">
 How did you know
 I was hoping for a sign?
 My heart was so
@@ -127,6 +159,8 @@ I'll be damned if you love me
 Damned if you don't
 
 Oh, if you don't
+  </div>
+
 </div>
 
 <audio id="audio" loop>
