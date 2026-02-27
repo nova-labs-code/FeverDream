@@ -5,27 +5,77 @@
 <title>FEVER DREAM Player</title>
 <style>
   body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #111;
-    color: #fff;
-    font-family: sans-serif;
-    height: 100vh;
     margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #111;
   }
 
-  audio {
-    width: 300px;
+  #playButton {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: none;
+    background-color: #e74c3c;
+    color: white;
+    font-size: 2em;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background 0.2s;
   }
+
+  #playButton:hover {
+    background-color: #c0392b;
+  }
+
+  #playButton.paused::after {
+    content: "▶";
+  }
+
+  #playButton.playing::after {
+    content: "❚❚";
+  }
+
 </style>
 </head>
 <body>
 
-<audio controls loop autoplay>
+<button id="playButton" class="paused"></button>
+<audio id="feverAudio" loop>
   <source src="FEVER%20DREAM.mp3" type="audio/mpeg">
-  Your browser does not support the audio element.
 </audio>
+
+<script>
+const audio = document.getElementById('feverAudio');
+const button = document.getElementById('playButton');
+
+button.addEventListener('click', () => {
+  if(audio.paused){
+    audio.play();
+    button.classList.remove('paused');
+    button.classList.add('playing');
+  } else {
+    audio.pause();
+    button.classList.remove('playing');
+    button.classList.add('paused');
+  }
+});
+
+// Sync button state if media keys are used
+audio.addEventListener('play', () => {
+  button.classList.remove('paused');
+  button.classList.add('playing');
+});
+
+audio.addEventListener('pause', () => {
+  button.classList.remove('playing');
+  button.classList.add('paused');
+});
+</script>
 
 </body>
 </html>
