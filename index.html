@@ -4,84 +4,68 @@
 <meta charset="UTF-8">
 <title>FEVER DREAM Player</title>
 
-<!-- Favicons for browsers -->
-<link rel="icon" type="image/png" sizes="16x16" href="FeverDream.png">
-<link rel="icon" type="image/png" sizes="32x32" href="FeverDream.png">
-<link rel="icon" type="image/png" sizes="48x48" href="FeverDream.png">
-<link rel="icon" type="image/png" sizes="64x64" href="FeverDream.png">
-<link rel="shortcut icon" href="FeverDream.png">
-
-<!-- Apple touch icons -->
-<link rel="apple-touch-icon" sizes="57x57" href="FeverDream.png">
-<link rel="apple-touch-icon" sizes="60x60" href="FeverDream.png">
-<link rel="apple-touch-icon" sizes="72x72" href="FeverDream.png">
-<link rel="apple-touch-icon" sizes="76x76" href="FeverDream.png">
-<link rel="apple-touch-icon" sizes="114x114" href="FeverDream.png">
-<link rel="apple-touch-icon" sizes="120x120" href="FeverDream.png">
-<link rel="apple-touch-icon" sizes="144x144" href="FeverDream.png">
-<link rel="apple-touch-icon" sizes="152x152" href="FeverDream.png">
-<link rel="apple-touch-icon" sizes="180x180" href="FeverDream.png">
-
-<!-- Android / Chrome -->
-<link rel="icon" sizes="192x192" href="FeverDream.png">
-<link rel="manifest" href="manifest.json"> <!-- optional, for PWA -->
-
-<!-- Microsoft tiles -->
+<!-- Universal icons -->
+<link rel="icon" type="image/png" href="FeverDream.png">
+<link rel="apple-touch-icon" href="FeverDream.png">
 <meta name="msapplication-TileImage" content="FeverDream.png">
-<meta name="msapplication-TileColor" content="#111">
 
 <style>
   body {
     margin: 0;
     height: 100vh;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: #111;
-    color: white;
     font-family: sans-serif;
-    gap: 30px;
   }
 
-  /* Album cover above button */
-  #albumCover {
-    width: 250px;
-    height: 250px;
+  /* Container for album cover and button */
+  .player-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
     border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(231, 76, 60, 0.7);
+  }
+
+  /* Album cover background */
+  #albumCover {
+    width: 100%;
+    height: 100%;
     background: url('FeverDream.png') no-repeat center center;
     background-size: cover;
-    box-shadow: 0 0 20px rgba(231, 76, 60, 0.6);
+    display: block;
   }
 
-  /* Play button with same image as background */
+  /* Play/pause button overlaid */
   #playButton {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 100px;
     height: 100px;
     border-radius: 50%;
     border: none;
-    background: url('FeverDream.png') no-repeat center center;
-    background-size: cover;
+    background-color: rgba(0,0,0,0.6);
+    color: white;
+    font-size: 2em;
     cursor: pointer;
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 0 15px rgba(231, 76, 60, 0.6);
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s, background 0.2s;
   }
 
   #playButton:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 25px rgba(231, 76, 60, 0.8);
+    transform: translate(-50%, -50%) scale(1.1);
+    background-color: rgba(0,0,0,0.8);
   }
 
-  /* Play/pause overlay */
   #playButton::after {
     content: "▶";
-    color: white;
-    font-size: 2em;
-    position: absolute;
   }
 
   #playButton.playing::after {
@@ -92,8 +76,11 @@
 </head>
 <body>
 
-<div id="albumCover"></div>
-<button id="playButton" class="paused"></button>
+<div class="player-container">
+  <div id="albumCover"></div>
+  <button id="playButton" class="paused"></button>
+</div>
+
 <audio id="feverAudio" loop>
   <source src="FEVER%20DREAM.mp3" type="audio/mpeg">
 </audio>
