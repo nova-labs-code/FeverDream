@@ -25,46 +25,48 @@ body {
 
 .player {
   position: relative;
-  width: 420px;
-  height: 420px;
-  border-radius: 20px;
+  width: 460px;
+  height: 460px;
+  border-radius: 22px;
   overflow: hidden;
   background: url("FeverDream.png") center / cover no-repeat;
-  box-shadow: 0 0 35px rgba(231,76,60,.7);
+  box-shadow: 0 0 40px rgba(231,76,60,.75);
 }
 
 .play-btn {
   position: absolute;
   inset: 0;
   margin: auto;
-  width: 110px;
-  height: 110px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   background: rgba(0,0,0,.65);
   border: none;
   color: white;
-  font-size: 2.4rem;
+  font-size: 2.6rem;
   cursor: pointer;
+  backdrop-filter: blur(6px);
 }
 
 .playing::after { content: "❚❚"; }
 .paused::after { content: "▶"; }
 
 .lyrics {
-  width: 420px;
-  max-height: 220px;
+  width: 460px;
+  max-height: 260px;
   overflow-y: auto;
   text-align: center;
-  line-height: 1.6;
-  opacity: .9;
-  padding: 10px;
+  line-height: 1.65;
+  opacity: .95;
+  padding: 10px 16px;
+  white-space: pre-line;
 }
 
 .lyrics::-webkit-scrollbar {
   width: 6px;
 }
 .lyrics::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,.2);
+  background: rgba(255,255,255,.25);
   border-radius: 4px;
 }
 </style>
@@ -75,7 +77,57 @@ body {
   <button id="playBtn" class="play-btn paused"></button>
 </div>
 
-<div class="lyrics" id="lyrics">Loading lyrics…</div>
+<div class="lyrics">
+How did you know
+I was hoping for a sign?
+My heart was so
+Close to closing time
+Something 'bout you hit me like a
+
+Freight train to the chest
+Ah, the day we met
+All my loneliness
+Left the room the second that you
+
+Walked in, something like a fever dream
+Haven't slept in weeks, I think I'm seeing things
+Like our shadows dancing us out of our clothes
+I'll be damned if you love me
+Damned if you don't
+
+Maybe it's fate, maybe it's late
+Told you I ain't no liar
+Watching you leave's haunting my dreams
+Baby, it hit me like a
+
+Freight train to the chest
+Ah, the day we met
+All my loneliness
+Left the room the second that you
+
+Walked in, something like a fever dream
+Haven't slept in weeks, I think I'm seeing things
+Like our shadows dancing us out of our clothes
+I'll be damned if you love me
+Damned if you don't
+
+One foot on the edge
+Ah, that silhouette
+Ah, I can't forget
+Something 'bout you hit me like a
+Freight train to the chest
+Ah, the day we met
+All my loneliness
+Left the room the second that you
+
+Walked in, something like a fever dream
+Haven't slept in weeks, I think I'm seeing things
+Like our shadows dancing us out of our clothes
+I'll be damned if you love me
+Damned if you don't
+
+Oh, if you don't
+</div>
 
 <audio id="audio" loop>
   <source src="FEVER%20DREAM.mp3" type="audio/mpeg">
@@ -84,22 +136,10 @@ body {
 <script>
 const audio = document.getElementById("audio");
 const btn = document.getElementById("playBtn");
-const lyricsBox = document.getElementById("lyrics");
 
-/* ▶ Play / Pause */
 btn.onclick = () => audio.paused ? audio.play() : audio.pause();
 audio.onplay = () => btn.className = "play-btn playing";
 audio.onpause = () => btn.className = "play-btn paused";
-
-/* 🎵 Fetch lyrics */
-fetch("https://api.lyrics.ovh/v1/ARTIST/FEVER%20DREAM")
-  .then(res => res.json())
-  .then(data => {
-    lyricsBox.textContent = data.lyrics || "Lyrics not found.";
-  })
-  .catch(() => {
-    lyricsBox.textContent = "Could not load lyrics.";
-  });
 </script>
 
 </body>
