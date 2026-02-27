@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FEVER DREAM</title>
 
-<!-- Universal icons -->
+<!-- Icons -->
 <link rel="icon" href="FeverDream.png">
 <link rel="apple-touch-icon" href="FeverDream.png">
 <meta name="msapplication-TileImage" content="FeverDream.png">
@@ -44,7 +44,7 @@ body {
   border-radius: 22px;
   overflow: hidden;
   background: url("FeverDream.png") center / cover no-repeat;
-  box-shadow: 0 0 40px rgba(231,76,60,.7);
+  box-shadow: 0 0 40px rgba(231,76,60,.75);
 }
 
 /* Play button */
@@ -92,6 +92,18 @@ body {
   border-radius: 4px;
 }
 
+/* Highlight active line */
+.line {
+  opacity: .35;
+  padding: 4px 0;
+  transition: opacity .2s, transform .2s;
+}
+
+.line.active {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
 /* Desktop polish */
 @media (min-width: 768px) {
   .lyrics {
@@ -104,63 +116,10 @@ body {
 <body>
 
 <div class="app">
-
   <div class="player">
     <button id="playBtn" class="play-btn paused"></button>
   </div>
-
-  <div class="lyrics">
-How did you know
-I was hoping for a sign?
-My heart was so
-Close to closing time
-Something 'bout you hit me like a
-
-Freight train to the chest
-Ah, the day we met
-All my loneliness
-Left the room the second that you
-
-Walked in, something like a fever dream
-Haven't slept in weeks, I think I'm seeing things
-Like our shadows dancing us out of our clothes
-I'll be damned if you love me
-Damned if you don't
-
-Maybe it's fate, maybe it's late
-Told you I ain't no liar
-Watching you leave's haunting my dreams
-Baby, it hit me like a
-
-Freight train to the chest
-Ah, the day we met
-All my loneliness
-Left the room the second that you
-
-Walked in, something like a fever dream
-Haven't slept in weeks, I think I'm seeing things
-Like our shadows dancing us out of our clothes
-I'll be damned if you love me
-Damned if you don't
-
-One foot on the edge
-Ah, that silhouette
-Ah, I can't forget
-Something 'bout you hit me like a
-Freight train to the chest
-Ah, the day we met
-All my loneliness
-Left the room the second that you
-
-Walked in, something like a fever dream
-Haven't slept in weeks, I think I'm seeing things
-Like our shadows dancing us out of our clothes
-I'll be damned if you love me
-Damned if you don't
-
-Oh, if you don't
-  </div>
-
+  <div class="lyrics" id="lyrics"></div>
 </div>
 
 <audio id="audio" loop>
@@ -170,10 +129,80 @@ Oh, if you don't
 <script>
 const audio = document.getElementById("audio");
 const btn = document.getElementById("playBtn");
+const lyricsBox = document.getElementById("lyrics");
 
+/* ▶ Play / Pause */
 btn.onclick = () => audio.paused ? audio.play() : audio.pause();
 audio.onplay = () => btn.className = "play-btn playing";
 audio.onpause = () => btn.className = "play-btn paused";
+
+/* ⏱ Timestamped lyrics */
+const parsed = [
+  { time: 0, text: "Clack, clack, clack, clack, clack." },
+  { time: 30, text: "How did you know I was hoping for a sign?" },
+  { time: 32, text: "My heart was so Close to closing time" },
+  { time: 34, text: "Something 'bout you hit me like a" },
+  { time: 36, text: "Freight train to the chest" },
+  { time: 38, text: "Ah, the day we met" },
+  { time: 39, text: "All my loneliness" },
+  { time: 42, text: "Left the room the second that you" },
+  { time: 44, text: "Walked in, something like a fever dream" },
+  { time: 46, text: "Haven't slept in weeks, I think I'm seeing things" },
+  { time: 48, text: "Like our shadows dancing us out of our clothes" },
+  { time: 51, text: "I'll be damned if you love me" },
+  { time: 52, text: "Damned if you don't" },
+  { time: 65, text: "Maybe it's fate, maybe it's late" },
+  { time: 67, text: "Told you I ain't no liar" },
+  { time: 70, text: "Watching you leave's haunting my dreams" },
+  { time: 72, text: "Baby, it hit me like a" },
+  { time: 74, text: "Freight train to the chest" },
+  { time: 76, text: "Ah, the day we met" },
+  { time: 78, text: "All my loneliness" },
+  { time: 80, text: "Left the room the second that you" },
+  { time: 82, text: "Walked in, something like a fever dream" },
+  { time: 84, text: "Haven't slept in weeks, I think I'm seeing things" },
+  { time: 86, text: "Like our shadows dancing us out of our clothes" },
+  { time: 88, text: "I'll be damned if you love me" },
+  { time: 91, text: "Damned if you don't" },
+  { time: 92, text: "One foot on the edge" },
+  { time: 95, text: "Ah, that silhouette" },
+  { time: 96, text: "Ah, I can't forget" },
+  { time: 98, text: "Something 'bout you hit me like a" },
+  { time: 104, text: "Freight train to the chest" },
+  { time: 107, text: "Ah, the day we met" },
+  { time: 109, text: "All my loneliness" },
+  { time: 111, text: "Left the room the second that you" },
+  { time: 113, text: "Walked in, something like a fever dream" },
+  { time: 114, text: "Haven't slept in weeks, I think I'm seeing things" },
+  { time: 116, text: "Like our shadows dancing us out of our clothes" },
+  { time: 118, text: "I'll be damned if you love me" },
+  { time: 120, text: "Damned if you don't" },
+  { time: 122, text: "Oh, if you don't" },
+  { time: 124, text: "Oh, if you don't" }
+];
+
+/* Render lyrics */
+parsed.forEach(l => {
+  const div = document.createElement("div");
+  div.className = "line";
+  div.textContent = l.text;
+  lyricsBox.appendChild(div);
+});
+
+/* Sync lyrics */
+audio.ontimeupdate = () => {
+  const current = audio.currentTime;
+  parsed.forEach((l,i) => {
+    const el = lyricsBox.children[i];
+    const next = parsed[i+1];
+    if(current >= l.time && (!next || current < next.time)) {
+      el.classList.add("active");
+      el.scrollIntoView({behavior:"smooth",block:"center"});
+    } else {
+      el.classList.remove("active");
+    }
+  });
+};
 </script>
 
 </body>
