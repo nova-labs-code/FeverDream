@@ -5,21 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FEVER DREAM</title>
 
-<!-- Universal icons -->
 <link rel="icon" href="FeverDream.png">
 <link rel="apple-touch-icon" href="FeverDream.png">
 <meta name="msapplication-TileImage" content="FeverDream.png">
 
 <style>
-:root {
-  --max-width: 520px;
-}
+:root { --max-width: 520px; }
 
 body {
   margin: 0;
   background: #111;
   color: #fff;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: system-ui, sans-serif;
   display: flex;
   justify-content: center;
 }
@@ -44,7 +41,7 @@ body {
   border-radius: 22px;
   overflow: hidden;
   background: url("FeverDream.png") center / cover no-repeat;
-  box-shadow: 0 0 40px rgba(231,76,60,.7);
+  box-shadow: 0 0 40px rgba(231,76,60,.75);
 }
 
 /* Play button */
@@ -83,22 +80,13 @@ body {
   white-space: pre-line;
 }
 
-/* Scrollbar */
-.lyrics::-webkit-scrollbar {
-  width: 6px;
-}
-.lyrics::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,.25);
-  border-radius: 4px;
-}
+/* Active line highlight */
+.line.active { color: #e74c3c; font-weight: bold; }
 
-/* Desktop polish */
-@media (min-width: 768px) {
-  .lyrics {
-    max-height: 300px;
-    font-size: 1.05rem;
-  }
-}
+.lyrics::-webkit-scrollbar { width: 6px; }
+.lyrics::-webkit-scrollbar-thumb { background: rgba(255,255,255,.25); border-radius: 4px; }
+
+@media (min-width: 768px) { .lyrics { max-height: 300px; font-size: 1.05rem; } }
 </style>
 </head>
 <body>
@@ -109,57 +97,7 @@ body {
     <button id="playBtn" class="play-btn paused"></button>
   </div>
 
-  <div class="lyrics">
-How did you know
-I was hoping for a sign?
-My heart was so
-Close to closing time
-Something 'bout you hit me like a
-
-Freight train to the chest
-Ah, the day we met
-All my loneliness
-Left the room the second that you
-
-Walked in, something like a fever dream
-Haven't slept in weeks, I think I'm seeing things
-Like our shadows dancing us out of our clothes
-I'll be damned if you love me
-Damned if you don't
-
-Maybe it's fate, maybe it's late
-Told you I ain't no liar
-Watching you leave's haunting my dreams
-Baby, it hit me like a
-
-Freight train to the chest
-Ah, the day we met
-All my loneliness
-Left the room the second that you
-
-Walked in, something like a fever dream
-Haven't slept in weeks, I think I'm seeing things
-Like our shadows dancing us out of our clothes
-I'll be damned if you love me
-Damned if you don't
-
-One foot on the edge
-Ah, that silhouette
-Ah, I can't forget
-Something 'bout you hit me like a
-Freight train to the chest
-Ah, the day we met
-All my loneliness
-Left the room the second that you
-
-Walked in, something like a fever dream
-Haven't slept in weeks, I think I'm seeing things
-Like our shadows dancing us out of our clothes
-I'll be damned if you love me
-Damned if you don't
-
-Oh, if you don't
-  </div>
+  <div class="lyrics" id="lyrics"></div>
 
 </div>
 
@@ -170,10 +108,80 @@ Oh, if you don't
 <script>
 const audio = document.getElementById("audio");
 const btn = document.getElementById("playBtn");
+const lyricsBox = document.getElementById("lyrics");
 
+// ▶ Play / Pause
 btn.onclick = () => audio.paused ? audio.play() : audio.pause();
 audio.onplay = () => btn.className = "play-btn playing";
 audio.onpause = () => btn.className = "play-btn paused";
+
+// 🔹 Synced lyrics array
+const syncedLyrics = [
+  { time: 0, text: "clack clack clack clack clack" },
+  { time: 11, text: "How did you know" },
+  { time: 14, text: "I was hoping for a sign?" },
+  { time: 20, text: "My heart was so" },
+  { time: 23, text: "Close to closing time" },
+  { time: 28, text: "Something 'bout you hit me like a" },
+  { time: 30, text: "Freight train to the chest" },
+  { time: 32, text: "Ah, the day we met" },
+  { time: 34, text: "All my loneliness" },
+  { time: 36, text: "Left the room the second that you" },
+  { time: 39, text: "Walked in, something like a fever dream" },
+  { time: 43, text: "Haven't slept in weeks, I think I'm seeing things" },
+  { time: 47, text: "Like our shadows dancing us out of our clothes" },
+  { time: 51, text: "I'll be damned if you love me" },
+  { time: 55, text: "Damned if you don't" },
+  { time: 65, text: "Maybe it's fate, maybe it's late" },
+  { time: 69, text: "Told you I ain't no liar" },
+  { time: 71, text: "Watching you leave's haunting my dreams" },
+  { time: 73, text: "Baby, it hit me like a" },
+  { time: 75, text: "Freight train to the chest" },
+  { time: 77, text: "Ah, the day we met" },
+  { time: 79, text: "All my loneliness" },
+  { time: 81, text: "Left the room the second that you" },
+  { time: 83, text: "Walked in, something like a fever dream" },
+  { time: 87, text: "Haven't slept in weeks, I think I'm seeing things" },
+  { time: 92, text: "Like our shadows dancing us out of our clothes" },
+  { time: 96, text: "I'll be damned if you love me" },
+  { time: 99, text: "Damned if you don't" },
+  { time: 105, text: "One foot on the edge" },
+  { time: 107, text: "Ah, that silhouette" },
+  { time: 110, text: "Ah, I can't forget" },
+  { time: 112, text: "Something 'bout you hit me like a" },
+  { time: 115, text: "Freight train to the chest" },
+  { time: 117, text: "Ah, the day we met" },
+  { time: 119, text: "All my loneliness" },
+  { time: 121, text: "Left the room the second that you" },
+  { time: 123, text: "Walked in, something like a fever dream" },
+  { time: 127, text: "Haven't slept in weeks, I think I'm seeing things" },
+  { time: 132, text: "Like our shadows dancing us out of our clothes" },
+  { time: 136, text: "I'll be damned if you love me" },
+  { time: 139, text: "Damned if you don't" },
+  { time: 143, text: "Oh, if you don't" }
+];
+
+// Render lyrics
+syncedLyrics.forEach(l => {
+  const div = document.createElement("div");
+  div.className = "line";
+  div.textContent = l.text;
+  lyricsBox.appendChild(div);
+});
+
+// Update highlight
+audio.ontimeupdate = () => {
+  syncedLyrics.forEach((l, i) => {
+    const line = lyricsBox.children[i];
+    const next = syncedLyrics[i + 1];
+    if (audio.currentTime >= l.time && (!next || audio.currentTime < next.time)) {
+      line.classList.add("active");
+      line.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      line.classList.remove("active");
+    }
+  });
+};
 </script>
 
 </body>
